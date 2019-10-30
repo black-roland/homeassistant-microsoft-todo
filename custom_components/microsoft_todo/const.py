@@ -7,7 +7,7 @@ AUTHORIZATION_BASE_URL = "https://login.microsoftonline.com/common/oauth2/v2.0/a
 TOKEN_URL = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
 SCOPE = ["offline_access", "Tasks.ReadWrite"]
 
-MS_TODO_CONFIG_FILE = ".ms_todo.json"
+MS_TODO_AUTH_FILE = ".ms_todo_auth.json"
 ATTR_ACCESS_TOKEN = "access_token"
 ATTR_REFRESH_TOKEN = "refresh_token"
 

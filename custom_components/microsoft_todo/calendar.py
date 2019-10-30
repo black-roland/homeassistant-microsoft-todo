@@ -22,7 +22,7 @@ from .const import (
     AUTHORIZATION_BASE_URL,
     TOKEN_URL,
     SCOPE,
-    MS_TODO_CONFIG_FILE,
+    MS_TODO_AUTH_FILE,
     SERVICE_NEW_TASK,
     SUBJECT,
 )
@@ -61,13 +61,13 @@ def request_configuration(hass, config, add_entities, authorization_url):
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
-    config_path = hass.config.path(MS_TODO_CONFIG_FILE)
+    config_path = hass.config.path(MS_TODO_AUTH_FILE)
     config_file = None
     if os.path.isfile(config_path):
         config_file = load_json(config_path)
 
     def token_saver(token):
-        save_json(hass.config.path(MS_TODO_CONFIG_FILE), token)
+        save_json(hass.config.path(MS_TODO_AUTH_FILE), token)
 
     callback_url = f"{hass.config.api.base_url}{AUTH_CALLBACK_PATH}"
     oauth = OAuth2Session(
@@ -125,7 +125,7 @@ class MSToDoAuthCallbackView(HomeAssistantView):
 
         token = self.oauth.fetch_token(TOKEN_URL, client_secret=self.client_secret, code=data.get("code"))
 
-        save_json(hass.config.path(MS_TODO_CONFIG_FILE), token)
+        save_json(hass.config.path(MS_TODO_AUTH_FILE), token)
 
         response_message = """Microsoft To Do has been successfully authorized!
                               You can close this window now!"""
