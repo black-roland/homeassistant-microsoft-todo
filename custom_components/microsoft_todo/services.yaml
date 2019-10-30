@@ -1,0 +1,6 @@
+new_task:
+  description: Create a new task.
+  fields:
+    subject:
+      description: The subject of the task.
+      example: Pick up the mail.

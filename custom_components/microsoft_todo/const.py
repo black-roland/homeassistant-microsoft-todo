@@ -10,3 +10,7 @@ SCOPE = ["offline_access", "Tasks.ReadWrite"]
 MS_TODO_CONFIG_FILE = ".ms_todo.json"
 ATTR_ACCESS_TOKEN = "access_token"
 ATTR_REFRESH_TOKEN = "refresh_token"
+
+SERVICE_NEW_TASK = "ms_todo_new_task"
+
+SUBJECT = "subject"
