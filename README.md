@@ -6,6 +6,12 @@ The integration allows you to create tasks in Microsoft To Do from Home Assistan
 
 Work is still in progress. Next steps are tracked as [issues](https://github.com/black-roland/homeassistant-microsoft-todo/labels/todo).
 
+## Installation
+
+This component can be installed using [HACS](https://github.com/hacs/integration). Simply add a custom repository `black-roland/homeassistant-microsoft-todo` and install the integration.
+
+Alternatively, that's possible to copy the content of the `custom_components` to [the config directory](https://developers.home-assistant.io/docs/en/creating_component_loading.html).
+
 ## Setup
 
 To get access to Microsoft To Do API you need to register an application in Azure:
