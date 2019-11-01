@@ -85,6 +85,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     tasks_api = OutlookTasksApi(client=oauth, logger=_LOGGER, timezone=dt.DEFAULT_TIME_ZONE)
 
     if not config_file:
+        _LOGGER.info(f"Redirect URI: {callback_url}")
         # NOTE: request extra scope for the offline access and avoid
         # exception related to differences between requested and granted scopes
         oauth.scope = AUTH_REQUEST_SCOPE
