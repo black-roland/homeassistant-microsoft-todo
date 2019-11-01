@@ -41,6 +41,7 @@ Example:
 - service: microsoft_todo.ms_todo_new_task
   data:
     subject: "Test task"
+    reminder_date_time: "2019-12-01T17:00:00"
 ```
 
 *NOTE*: Service name might be changed in future [#5](https://github.com/black-roland/homeassistant-microsoft-todo/issues/5).

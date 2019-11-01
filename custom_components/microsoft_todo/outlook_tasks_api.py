@@ -1,19 +1,31 @@
+from requests.exceptions import HTTPError
+
+
 class OutlookTasksApi:
 
     api_endpoint = "https://graph.microsoft.com"
 
-    def __init__(self, client):
+    def __init__(self, client, logger):
         self.client = client
+        self.logger = logger
+        self.timezone = "UTC"
 
-    def create_task(self, subject):
+    def create_task(self, subject, reminder_date_time=None):
         uri = self.api_endpoint + "/beta/me/outlook/tasks"
 
         task_req = {
             "subject": subject,
+            "reminderDateTime": {
+                "dateTime": reminder_date_time,
+                "timeZone": self.timezone
+            } if reminder_date_time else None,
+            "isReminderOn": True if reminder_date_time else False,
         }
 
-        req_headers = {
-            "Prefer": "outlook.timezone",
-        }
+        try:
+            res = self.client.post(uri, json=task_req)
+            res.raise_for_status()
+        except HTTPError as e:
+            self.logger.error("%s. Response: %s", e, res.json())
 
-        return self.client.post(uri, json=task_req, headers=req_headers)
+        return res

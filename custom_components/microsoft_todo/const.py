@@ -15,3 +15,4 @@ ATTR_REFRESH_TOKEN = "refresh_token"
 SERVICE_NEW_TASK = "ms_todo_new_task"
 
 SUBJECT = "subject"
+REMINDER_DATE_TIME = "reminder_date_time"
