@@ -12,6 +12,7 @@ from homeassistant.components.calendar import (
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.http import HomeAssistantView
 from homeassistant.util.json import load_json, save_json
+from homeassistant.util import dt
 
 from .outlook_tasks_api import OutlookTasksApi
 from .const import (
@@ -81,7 +82,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         },
         token_updater=token_saver
     )
-    tasks_api = OutlookTasksApi(oauth, _LOGGER)
+    tasks_api = OutlookTasksApi(client=oauth, logger=_LOGGER, timezone=dt.DEFAULT_TIME_ZONE)
 
     if not config_file:
         # NOTE: request extra scope for the offline access and avoid

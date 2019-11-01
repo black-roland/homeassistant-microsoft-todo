@@ -5,10 +5,10 @@ class OutlookTasksApi:
 
     api_endpoint = "https://graph.microsoft.com"
 
-    def __init__(self, client, logger):
+    def __init__(self, client, logger, timezone):
         self.client = client
         self.logger = logger
-        self.timezone = "UTC"
+        self.timezone = timezone
 
     def create_task(self, subject, reminder_date_time=None):
         uri = self.api_endpoint + "/beta/me/outlook/tasks"
@@ -17,7 +17,7 @@ class OutlookTasksApi:
             "subject": subject,
             "reminderDateTime": {
                 "dateTime": reminder_date_time,
-                "timeZone": self.timezone
+                "timeZone": self.timezone.zone
             } if reminder_date_time else None,
             "isReminderOn": True if reminder_date_time else False,
         }
