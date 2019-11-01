@@ -22,6 +22,7 @@ from .const import (
     AUTHORIZATION_BASE_URL,
     TOKEN_URL,
     SCOPE,
+    AUTH_REQUEST_SCOPE,
     MS_TODO_AUTH_FILE,
     SERVICE_NEW_TASK,
     SUBJECT,
@@ -41,10 +42,6 @@ NEW_TASK_SERVICE_SCHEMA = vol.Schema(
         vol.Required(SUBJECT): cv.string,
     }
 )
-
-# FIXME: find a proper way or change the OAuth implementation
-os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
-os.environ['OAUTHLIB_IGNORE_SCOPE_CHANGE'] = '1'
 
 
 def request_configuration(hass, config, add_entities, authorization_url):
@@ -85,7 +82,11 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     tasks_api = OutlookTasksApi(oauth)
 
     if not config_file:
+        # NOTE: request extra scope for the offline access and avoid
+        # exception related to differences between requested and granted scopes
+        oauth.scope = AUTH_REQUEST_SCOPE
         authorization_url, state = oauth.authorization_url(AUTHORIZATION_BASE_URL)
+        oauth.scope = SCOPE
         request_configuration(hass, config, add_entities, authorization_url)
 
     hass.http.register_view(MSToDoAuthCallbackView(add_entities, oauth, config.get(CONF_CLIENT_SECRET)))
