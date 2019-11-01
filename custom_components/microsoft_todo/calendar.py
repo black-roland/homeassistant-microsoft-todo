@@ -89,7 +89,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         oauth.scope = SCOPE
         request_configuration(hass, config, add_entities, authorization_url)
 
-    hass.http.register_view(MSToDoAuthCallbackView(add_entities, oauth, config.get(CONF_CLIENT_SECRET)))
+    hass.http.register_view(
+        MSToDoAuthCallbackView(oauth, config.get(CONF_CLIENT_SECRET), [hass, config, add_entities, discovery_info])
+    )
 
     def handle_new_task(call):
         subject = call.data.get(SUBJECT)
@@ -106,10 +108,10 @@ class MSToDoAuthCallbackView(HomeAssistantView):
     name = "auth:ms_todo:callback"
     requires_auth = False
 
-    def __init__(self, add_entities, oauth, client_secret):
-        self.add_entities = add_entities
+    def __init__(self, oauth, client_secret, setup_args):
         self.oauth = oauth
         self.client_secret = client_secret
+        self.setup_args = setup_args
 
     @callback
     def get(self, request):
@@ -131,7 +133,7 @@ class MSToDoAuthCallbackView(HomeAssistantView):
         response_message = """Microsoft To Do has been successfully authorized!
                               You can close this window now!"""
 
-        hass.async_add_job(setup_platform, hass, hass.config, self.add_entities)
+        hass.async_add_job(setup_platform, *self.setup_args)
 
         return Response(
             text=html_response.format(response_message), content_type="text/html"
