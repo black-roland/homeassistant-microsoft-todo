@@ -6,7 +6,6 @@ Example:
 - service: microsoft_todo.ms_todo_new_task
   data:
     subject: "Test task"
-    note: "Test note"
 ```
 
 See README for details.

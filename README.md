@@ -47,8 +47,12 @@ Simple example:
 - service: microsoft_todo.ms_todo_new_task
   data:
     subject: "Test task"
-    note: "Test note"
+    list_id: "AAMkADIyAAAhrbPXAAA="
 ```
+
+*NOTE*: You can get `list_id` from the URL bar of your browser (for example: `https://to-do.microsoft.com/lists/AAMkADIyAAAhrbPXAAA=`).
+
+*TODO*: Use the list name instead of ID [#4](https://github.com/black-roland/homeassistant-microsoft-todo/issues/4).
 
 Automation example:
 
@@ -65,6 +69,7 @@ automation:
       - service: microsoft_todo.ms_todo_new_task
         data_template:
           subject: "Pay utility bill for {{ now().replace(month=now().month - 1).strftime('%B') }}" # previous month name
+          list_id: "AAMkADIyAAAhrbPXAAA="
           note: "Pay online: http://example.com/pay/"
           reminder_date_time: "{{ now().strftime('%Y-%m-%dT17:00:00') }}" # at 17:00 today
 ```

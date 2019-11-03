@@ -10,8 +10,10 @@ class OutlookTasksApi:
         self.logger = logger
         self.timezone = timezone
 
-    def create_task(self, subject, note=None, reminder_date_time=None):
+    def create_task(self, subject, list_id=None, note=None, reminder_date_time=None):
         uri = self.api_endpoint + "/beta/me/outlook/tasks"
+        if list_id:
+            uri = self.api_endpoint + "/beta/me/outlook/taskFolders/{}/tasks".format(list_id)
 
         task_req = {
             "subject": subject,
@@ -32,8 +34,9 @@ class OutlookTasksApi:
 
         try:
             res = self.client.post(uri, json=task_req)
+            self.logger.debug("Create task response: %s", res.json())
             res.raise_for_status()
         except HTTPError as e:
-            self.logger.error("%s. Response: %s", e, res.json())
+            self.logger.error("Unable to create task: %s. Response: %s", e, res.json())
 
         return res
