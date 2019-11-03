@@ -39,15 +39,34 @@ Restart Home Assistant and finalize authorization through UI. There should be a 
 
 ## Services
 
-To create a task in Microsoft To Do you can call `microsoft_todo.ms_todo_new_task` service. Currently, only `subject` property is supported.
+To create a task in Microsoft To Do you can call `microsoft_todo.ms_todo_new_task` service.
 
-Example:
+Simple example:
 
 ```yaml
 - service: microsoft_todo.ms_todo_new_task
   data:
     subject: "Test task"
-    reminder_date_time: "2019-12-01T17:00:00"
+    note: "Test note"
+```
+
+Automation example:
+
+```yaml
+automation:
+  - alias: "Remind to pay utility bill"
+    trigger:
+      platform: time
+      at: "00:00:00"
+    condition:
+      condition: template
+      value_template: "{{ now().day == 1 }}"
+    action:
+      - service: microsoft_todo.ms_todo_new_task
+        data_template:
+          subject: "Pay utility bill for {{ now().replace(month=now().month - 1).strftime('%B') }}" # previous month name
+          note: "Pay online: http://example.com/pay/"
+          reminder_date_time: "{{ now().strftime('%Y-%m-%dT17:00:00') }}" # at 17:00 today
 ```
 
 *NOTE*: Service name might be changed in future [#5](https://github.com/black-roland/homeassistant-microsoft-todo/issues/5).

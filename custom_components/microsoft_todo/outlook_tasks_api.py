@@ -10,17 +10,25 @@ class OutlookTasksApi:
         self.logger = logger
         self.timezone = timezone
 
-    def create_task(self, subject, reminder_date_time=None):
+    def create_task(self, subject, note=None, reminder_date_time=None):
         uri = self.api_endpoint + "/beta/me/outlook/tasks"
 
         task_req = {
             "subject": subject,
-            "reminderDateTime": {
+        }
+
+        if note:
+            task_req["body"] = {
+                "contentType": "Text",
+                "content": note
+            }
+
+        if reminder_date_time:
+            task_req["reminderDateTime"] = {
                 "dateTime": reminder_date_time,
                 "timeZone": self.timezone.zone
-            } if reminder_date_time else None,
-            "isReminderOn": True if reminder_date_time else False,
-        }
+            }
+            task_req["isReminderOn"] = True
 
         try:
             res = self.client.post(uri, json=task_req)

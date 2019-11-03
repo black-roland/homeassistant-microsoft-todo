@@ -28,6 +28,7 @@ from .const import (
     SERVICE_NEW_TASK,
     SUBJECT,
     REMINDER_DATE_TIME,
+    NOTE,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -42,6 +43,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 NEW_TASK_SERVICE_SCHEMA = vol.Schema(
     {
         vol.Required(SUBJECT): cv.string,
+        vol.Optional(NOTE): cv.string,
         vol.Optional(REMINDER_DATE_TIME): cv.string,
     }
 )
@@ -100,7 +102,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     def handle_new_task(call):
         subject = call.data.get(SUBJECT)
         reminder_date_time = call.data.get(REMINDER_DATE_TIME)
-        tasks_api.create_task(subject, reminder_date_time)
+        note = call.data.get(NOTE)
+        tasks_api.create_task(subject, note, reminder_date_time)
 
     hass.services.register(
         DOMAIN, SERVICE_NEW_TASK, handle_new_task, schema=NEW_TASK_SERVICE_SCHEMA
