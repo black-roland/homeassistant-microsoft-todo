@@ -4,6 +4,8 @@ import logging
 import voluptuous as vol
 from requests_oauthlib import OAuth2Session
 from aiohttp.web import Response
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 from homeassistant.core import callback
 from homeassistant.components.calendar import (
@@ -75,6 +77,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     def token_saver(token):
         save_json(hass.config.path(MS_TODO_AUTH_FILE), token)
 
+    # TODO: create a separate HTTP client class
     callback_url = f"{hass.config.api.base_url}{AUTH_CALLBACK_PATH}"
     oauth = OAuth2Session(
         config.get(CONF_CLIENT_ID),
@@ -88,6 +91,11 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         },
         token_updater=token_saver
     )
+    retry = Retry(status=3, connect=3, status_forcelist=[500, 502, 503, 504])
+    adapter = HTTPAdapter(max_retries=retry)
+    oauth.mount("http://", adapter)
+    oauth.mount("https://", adapter)
+
     tasks_api = OutlookTasksApi(client=oauth, logger=_LOGGER, timezone=dt.DEFAULT_TIME_ZONE)
 
     if not config_file:
