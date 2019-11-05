@@ -10,7 +10,7 @@ class OutlookTasksApi:
         self.logger = logger
         self.timezone = timezone
 
-    def create_task(self, subject, list_id=None, note=None, reminder_date_time=None):
+    def create_task(self, subject, list_id=None, note=None, due_date=None, reminder_date_time=None):
         uri = self.api_endpoint + "/beta/me/outlook/tasks"
         if list_id:
             uri = self.api_endpoint + "/beta/me/outlook/taskFolders/{}/tasks".format(list_id)
@@ -25,6 +25,12 @@ class OutlookTasksApi:
                 "content": note
             }
 
+        if due_date:
+            task_req["dueDateTime"] = {
+                "dateTime": due_date.isoformat(),
+                "timeZone": self.timezone.zone
+            }
+
         if reminder_date_time:
             task_req["reminderDateTime"] = {
                 "dateTime": reminder_date_time,
@@ -33,9 +39,10 @@ class OutlookTasksApi:
             task_req["isReminderOn"] = True
 
         try:
+            self.logger.debug("Create task request: %s", task_req)
             res = self.client.post(uri, json=task_req)
-            self.logger.debug("Create task response: %s", res.json())
             res.raise_for_status()
+            self.logger.debug("Create task response: %s", res.json())
         except HTTPError as e:
             self.logger.error("Unable to create task: %s. Response: %s", e, res.json())
 

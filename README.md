@@ -71,6 +71,7 @@ automation:
           subject: "Pay utility bill for {{ now().replace(month=now().month - 1).strftime('%B') }}" # previous month name
           list_id: "AAMkADIyAAAhrbPXAAA="
           note: "Pay online: http://example.com/pay/"
+          due_date: "{{ now().strftime('%Y-%m-09') }}" # due 9th
           reminder_date_time: "{{ now().strftime('%Y-%m-%dT17:00:00') }}" # at 17:00 today
 ```
 

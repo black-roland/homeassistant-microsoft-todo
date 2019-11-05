@@ -29,6 +29,7 @@ from .const import (
     SUBJECT,
     LIST_ID,
     NOTE,
+    DUE_DATE,
     REMINDER_DATE_TIME,
 )
 
@@ -46,6 +47,7 @@ NEW_TASK_SERVICE_SCHEMA = vol.Schema(
         vol.Required(SUBJECT): cv.string,
         vol.Optional(LIST_ID): cv.string,
         vol.Optional(NOTE): cv.string,
+        vol.Optional(DUE_DATE): cv.date,
         vol.Optional(REMINDER_DATE_TIME): cv.string,
     }
 )
@@ -105,8 +107,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         subject = call.data.get(SUBJECT)
         list_id = call.data.get(LIST_ID)
         note = call.data.get(NOTE)
+        due_date = call.data.get(DUE_DATE)
         reminder_date_time = call.data.get(REMINDER_DATE_TIME)
-        tasks_api.create_task(subject, list_id, note, reminder_date_time)
+        tasks_api.create_task(subject, list_id, note, due_date, reminder_date_time)
 
     hass.services.register(
         DOMAIN, SERVICE_NEW_TASK, handle_new_task, schema=NEW_TASK_SERVICE_SCHEMA
