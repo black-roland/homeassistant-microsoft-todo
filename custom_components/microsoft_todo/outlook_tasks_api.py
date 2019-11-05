@@ -33,7 +33,7 @@ class OutlookTasksApi:
 
         if reminder_date_time:
             task_req["reminderDateTime"] = {
-                "dateTime": reminder_date_time,
+                "dateTime": reminder_date_time.isoformat(),
                 "timeZone": self.timezone.zone
             }
             task_req["isReminderOn"] = True

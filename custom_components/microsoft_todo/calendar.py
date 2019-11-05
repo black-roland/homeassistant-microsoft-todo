@@ -48,7 +48,7 @@ NEW_TASK_SERVICE_SCHEMA = vol.Schema(
         vol.Optional(LIST_ID): cv.string,
         vol.Optional(NOTE): cv.string,
         vol.Optional(DUE_DATE): cv.date,
-        vol.Optional(REMINDER_DATE_TIME): cv.string,
+        vol.Optional(REMINDER_DATE_TIME): cv.datetime,
     }
 )
 
