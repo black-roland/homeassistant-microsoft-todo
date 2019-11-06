@@ -45,5 +45,27 @@ class OutlookTasksApi:
             self.logger.debug("Create task response: %s", res.json())
         except HTTPError as e:
             self.logger.error("Unable to create task: %s. Response: %s", e, res.json())
+            raise
 
         return res
+
+    def get_list_id_by_name(self, list_name):
+        uri = self.api_endpoint + "/beta/me/outlook/taskFolders"
+        query_params = {
+            "$filter": "name eq '{}'".format(list_name.replace(r"'", r"\'"))
+        }
+
+        try:
+            self.logger.debug("Fetching To Do lists info")
+            res = self.client.get(uri, params=query_params)
+            res.raise_for_status()
+            self.logger.debug("To Do lists response: %s", res.json())
+        except HTTPError as e:
+            self.logger.error("Unable to get lists info: %s. Response: %s", e, res.json())
+            raise
+
+        try:
+            return res.json()["value"][0]["id"]
+        except (KeyError, IndexError) as e:
+            self.logger.error("No list with the name %s. %s", list_name, e)
+            raise

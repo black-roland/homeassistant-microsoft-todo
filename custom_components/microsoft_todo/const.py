@@ -15,6 +15,8 @@ ATTR_REFRESH_TOKEN = "refresh_token"
 SERVICE_NEW_TASK = "ms_todo_new_task"
 
 SUBJECT = "subject"
+LIST_CONF = "list_conf"
+LIST_NAME = "list_name"
 LIST_ID = "list_id"
 NOTE = "note"
 DUE_DATE = "due_date"

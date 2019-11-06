@@ -29,6 +29,8 @@ from .const import (
     MS_TODO_AUTH_FILE,
     SERVICE_NEW_TASK,
     SUBJECT,
+    LIST_CONF,
+    LIST_NAME,
     LIST_ID,
     NOTE,
     DUE_DATE,
@@ -47,7 +49,8 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 NEW_TASK_SERVICE_SCHEMA = vol.Schema(
     {
         vol.Required(SUBJECT): cv.string,
-        vol.Optional(LIST_ID): cv.string,
+        vol.Exclusive(LIST_NAME, LIST_CONF): cv.string,
+        vol.Exclusive(LIST_ID, LIST_CONF): cv.string,
         vol.Optional(NOTE): cv.string,
         vol.Optional(DUE_DATE): cv.date,
         vol.Optional(REMINDER_DATE_TIME): cv.datetime,
@@ -113,7 +116,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
     def handle_new_task(call):
         subject = call.data.get(SUBJECT)
-        list_id = call.data.get(LIST_ID)
+        list_name = call.data.get(LIST_NAME)
+        list_id = tasks_api.get_list_id_by_name(list_name) if list_name else call.data.get(LIST_ID)
         note = call.data.get(NOTE)
         due_date = call.data.get(DUE_DATE)
         reminder_date_time = call.data.get(REMINDER_DATE_TIME)
