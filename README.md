@@ -22,7 +22,8 @@ To get access to Microsoft To Do API you need to register an application in Azur
 1. Register a new personal app and obtain client ID and secret:<br />
    ![App registration and credentials](https://share.roland.black/file/black-roland-share/272d1efc-fb22-11e9-9aa9-f81654971495/register-app-obtain-creds.gif)
 1. Add a redirect URI: `https://[YOUR HOME ASSISTANT URL:PORT]/api/microsoft-todo`, replace `[YOUR HOME ASSISTANT URL:PORT]` with the domain name and port of our Home Assistant instance:<br />
-   ![Redirect URI](https://share.roland.black/file/black-roland-share/d9a41612-fb22-11e9-8f90-f81654971495/redirect-uri.gif)
+   ![Redirect URI](https://share.roland.black/file/black-roland-share/d9a41612-fb22-11e9-8f90-f81654971495/redirect-uri.gif)<br />
+   To be able to authenticate please make sure that [`base_url` option](https://www.home-assistant.io/integrations/http/#base_url) is configured properly and your browser can access the redirect URI (it doesn’t have to be accessible from the Internet, it can be even `localhost`).
 
 ## Configuration
 
