@@ -4,7 +4,7 @@ The integration allows you to create tasks in Microsoft To Do from Home Assistan
 
 ## Work in progress
 
-Work is still in progress. Next steps are tracked as [issues](https://github.com/black-roland/homeassistant-microsoft-todo/labels/todo).
+Work is still in progress and there might be breaking changes. Tasks for the 1st release are tracked on [the MVP board](https://github.com/black-roland/homeassistant-microsoft-todo/projects/2).
 
 ## Installation
 
