@@ -4,5 +4,8 @@
   "documentation": "https://github.com/black-roland/homeassistant-microsoft-todo",
   "dependencies": [],
   "codeowners": ["@black-roland"],
-  "requirements": ["requests_oauthlib==1.2.0"]
+  "requirements": [
+    "requests_oauthlib==1.2.0",
+    "emoji==0.5.4"
+  ]
 }

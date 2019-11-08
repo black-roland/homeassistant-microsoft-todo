@@ -1,4 +1,7 @@
+import re
+
 from requests.exceptions import HTTPError
+import emoji
 
 
 class OutlookTasksApi:
@@ -50,22 +53,35 @@ class OutlookTasksApi:
         return res
 
     def get_list_id_by_name(self, list_name):
+        lists = self.get_lists()
+
+        try:
+            return next(
+                l["id"] for l in lists["value"]
+                if l["name"] == list_name
+                # To Do allows to set an icon (emoji) for a list and this emoji
+                # is prepended to the list name so it needs to be stripped.
+                or self._strip_emoji_icon(l["name"]) == list_name
+            )
+        except StopIteration as e:
+            self.logger.error("No list with the name %s. %s", list_name, e)
+            raise
+
+    def get_lists(self):
         uri = self.api_endpoint + "/beta/me/outlook/taskFolders"
-        query_params = {
-            "$filter": "name eq '{}'".format(list_name.replace(r"'", r"\'"))
-        }
 
         try:
             self.logger.debug("Fetching To Do lists info")
-            res = self.client.get(uri, params=query_params)
+            res = self.client.get(uri)
             res.raise_for_status()
             self.logger.debug("To Do lists response: %s", res.json())
         except HTTPError as e:
             self.logger.error("Unable to get lists info: %s. Response: %s", e, res.json())
             raise
 
-        try:
-            return res.json()["value"][0]["id"]
-        except (KeyError, IndexError) as e:
-            self.logger.error("No list with the name %s. %s", list_name, e)
-            raise
+        return res.json()
+
+    def _strip_emoji_icon(self, list_name):
+        emoji_re = emoji.get_emoji_regexp()
+        list_emoji_icon_re = re.compile(u"^" + emoji_re.pattern)
+        return list_emoji_icon_re.sub(r"", list_name)
