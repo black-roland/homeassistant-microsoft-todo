@@ -69,10 +69,12 @@ class OutlookTasksApi:
 
     def get_lists(self):
         uri = self.api_endpoint + "/beta/me/outlook/taskFolders"
+        # NOTE: don't increase more, implement proper pagination instead
+        query_params = {"$top": 100}
 
         try:
             self.logger.debug("Fetching To Do lists info")
-            res = self.client.get(uri)
+            res = self.client.get(uri, params=query_params)
             res.raise_for_status()
             self.logger.debug("To Do lists response: %s", res.json())
         except HTTPError as e:
