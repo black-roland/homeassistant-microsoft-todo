@@ -1,0 +1,8 @@
+[BASIC]
+good-names=id,i,j,k,ex,Run,_,fp
+
+[MESSAGES CONTROL]
+disable=
+  missing-module-docstring, # ok for now
+  missing-class-docstring,
+  missing-function-docstring

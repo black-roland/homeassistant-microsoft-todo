@@ -1,7 +1,7 @@
 import re
 
 from requests.exceptions import HTTPError
-import emoji
+import emoji # pylint: disable=import-error
 
 
 class OutlookTasksApi:
@@ -46,8 +46,8 @@ class OutlookTasksApi:
             res = self.client.post(uri, json=task_req)
             res.raise_for_status()
             self.logger.debug("Create task response: %s", res.json())
-        except HTTPError as e:
-            self.logger.error("Unable to create task: %s. Response: %s", e, res.json())
+        except HTTPError as ex:
+            self.logger.error("Unable to create task: %s. Response: %s", ex, res.json())
             raise
 
         return res
@@ -63,8 +63,8 @@ class OutlookTasksApi:
                 # is prepended to the list name so it needs to be stripped.
                 or self._strip_emoji_icon(l["name"]) == list_name
             )
-        except StopIteration as e:
-            self.logger.error("No list with the name %s. %s", list_name, e)
+        except StopIteration as ex:
+            self.logger.error("No list with the name %s. %s", list_name, ex)
             raise
 
     def get_lists(self):
@@ -77,8 +77,8 @@ class OutlookTasksApi:
             res = self.client.get(uri, params=query_params)
             res.raise_for_status()
             self.logger.debug("To Do lists response: %s", res.json())
-        except HTTPError as e:
-            self.logger.error("Unable to get lists info: %s. Response: %s", e, res.json())
+        except HTTPError as ex:
+            self.logger.error("Unable to get lists info: %s. Response: %s", ex, res.json())
             raise
 
         return res.json()
