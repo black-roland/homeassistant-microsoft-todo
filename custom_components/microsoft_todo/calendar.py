@@ -5,7 +5,7 @@ import voluptuous as vol
 from requests_oauthlib import OAuth2Session
 from aiohttp.web import Response
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
+from urllib3.util import Retry
 
 from homeassistant.core import callback
 from homeassistant.components.calendar import (
@@ -106,12 +106,16 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         # NOTE: request extra scope for the offline access and avoid
         # exception related to differences between requested and granted scopes
         oauth.scope = AUTH_REQUEST_SCOPE
-        authorization_url, state = oauth.authorization_url(AUTHORIZATION_BASE_URL)
+        authorization_url, _state = oauth.authorization_url(AUTHORIZATION_BASE_URL)
         oauth.scope = SCOPE
         request_configuration(hass, config, add_entities, authorization_url)
 
     hass.http.register_view(
-        MSToDoAuthCallbackView(oauth, config.get(CONF_CLIENT_SECRET), [hass, config, add_entities, discovery_info])
+        MSToDoAuthCallbackView(
+            oauth,
+            config.get(CONF_CLIENT_SECRET),
+            [hass, config, add_entities, discovery_info]
+        )
     )
 
     def handle_new_task(call):
@@ -152,7 +156,11 @@ class MSToDoAuthCallbackView(HomeAssistantView):
             _LOGGER.error(error_msg)
             return Response(text=html_response.format(error_msg), content_type="text/html")
 
-        token = self.oauth.fetch_token(TOKEN_URL, client_secret=self.client_secret, code=data.get("code"))
+        token = self.oauth.fetch_token(
+            TOKEN_URL,
+            client_secret=self.client_secret,
+            code=data.get("code")
+        )
 
         save_json(hass.config.path(MS_TODO_AUTH_FILE), token)
 

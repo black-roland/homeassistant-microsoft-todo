@@ -1,5 +1,6 @@
-# Created by https://www.gitignore.io/api/linux,python,intellij
-# Edit at https://www.gitignore.io/?templates=linux,python,intellij
+
+# Created by https://www.gitignore.io/api/venv,linux,python,intellij
+# Edit at https://www.gitignore.io/?templates=venv,linux,python,intellij
 
 ### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
@@ -209,9 +210,17 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# End of https://www.gitignore.io/api/linux,python,intellij
+### venv ###
+# Virtualenv
+# http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
+pyvenv.cfg
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+pip-selfcheck.json
 
-### Custom rules ###
-
-# Home Assistant dev instance
-homeassistant/
+# End of https://www.gitignore.io/api/venv,linux,python,intellij
