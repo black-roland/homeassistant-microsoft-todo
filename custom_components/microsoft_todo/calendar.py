@@ -10,6 +10,7 @@ from urllib3.util import Retry
 from homeassistant.core import callback
 from homeassistant.components.calendar import (
     PLATFORM_SCHEMA,
+    CalendarEventDevice,
 )
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.http import HomeAssistantView
@@ -35,6 +36,7 @@ from .const import (
     NOTE,
     DUE_DATE,
     REMINDER_DATE_TIME,
+    ALL_TASKS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -118,6 +120,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         )
     )
 
+    add_entities([MSToDoListDevice(tasks_api, "Tasks")])
+
     def handle_new_task(call):
         subject = call.data.get(SUBJECT)
         list_name = call.data.get(LIST_NAME)
@@ -172,3 +176,35 @@ class MSToDoAuthCallbackView(HomeAssistantView):
         return Response(
             text=html_response.format(response_message), content_type="text/html"
         )
+
+class MSToDoListDevice(CalendarEventDevice):
+
+    def __init__(self, tasks_api, list_name):
+        self._tasks_api = tasks_api
+        self._list_name = list_name
+        self._tasks = []
+
+    @property
+    def event(self):
+        return None
+
+    @property
+    def name(self):
+        return self._list_name
+
+    @property
+    def device_state_attributes(self):
+        if len(self._tasks) == 0:
+            return None
+
+        attributes = {}
+        attributes[ALL_TASKS] = [t["subject"] for t in self._tasks]
+
+        return attributes
+
+    async def async_get_events(self, hass, start_date, end_date):
+        return []
+
+    def update(self):
+        tasks_res = self._tasks_api.get_uncompleted_tasks(self._list_name)
+        self._tasks = tasks_res["value"]

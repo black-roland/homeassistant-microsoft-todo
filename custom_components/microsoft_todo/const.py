@@ -21,3 +21,5 @@ LIST_ID = "list_id"
 NOTE = "note"
 DUE_DATE = "due_date"
 REMINDER_DATE_TIME = "reminder_date_time"
+
+ALL_TASKS = "all_tasks"
