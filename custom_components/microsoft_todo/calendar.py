@@ -120,7 +120,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         )
     )
 
-    add_entities([MSToDoListDevice(tasks_api, "Tasks")])
+    todo_list_names = [todo_list["name"] for todo_list in tasks_api.get_lists()["value"]]
+    calendar_devices = [MSToDoListDevice(tasks_api, name) for name in todo_list_names]
+    add_entities(calendar_devices)
 
     def handle_new_task(call):
         subject = call.data.get(SUBJECT)

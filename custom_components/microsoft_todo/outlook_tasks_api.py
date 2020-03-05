@@ -53,6 +53,7 @@ class OutlookTasksApi:
         return res
 
     def get_uncompleted_tasks(self, list_name):
+        # TODO: use ID instead of name to avoid additional calls
         list_id = self.get_list_id_by_name(list_name)
         uri = self.api_endpoint + "/beta/me/outlook/taskFolders/{}/tasks".format(list_id)
         query_params = {
