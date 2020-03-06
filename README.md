@@ -38,6 +38,18 @@ calendar:
 
 Restart Home Assistant and finalize authorization through UI. There should be a new configuration request in notifications.
 
+## Sensors
+
+Add the following section to your `sensor.yaml` file:
+
+```yaml
+- platform: microsoft_todo
+  client_id: YOUR_CLIENT_ID
+  client_secret: YOUR_CLIENT_SECRET
+  list_name:
+    - "Products"
+```
+
 ## Services
 
 To create a task in Microsoft To Do you can call `microsoft_todo.ms_todo_new_task` service.
