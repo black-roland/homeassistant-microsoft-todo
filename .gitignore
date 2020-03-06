@@ -224,3 +224,5 @@ venv.bak/
 pip-selfcheck.json
 
 # End of https://www.gitignore.io/api/venv,linux,python,intellij
+/.vs/ProjectSettings.json
+/.vs/slnx.sqlite

@@ -83,6 +83,21 @@ class OutlookTasksApi:
 
         return res.json()
 
+    def get_uncompleted_tasks(self, list_id):
+        uri = self.api_endpoint + "/beta/me/outlook/taskFolders/" + list_id + "/tasks"
+        query_params = {"$count": "true", "$filter": "status ne 'completed'"}
+        try:
+            self.logger.debug("Fetching To Do lists info")
+            res = self.client.get(uri, params=query_params)
+            res.raise_for_status()
+            self.logger.debug("To Do lists response: %s", res.json())
+        except HTTPError as ex:
+            self.logger.error("Unable to get lists info: %s. Response: %s", ex, res.json())
+            raise
+
+        return res.json()
+
+
     def _strip_emoji_icon(self, list_name):
         emoji_re = emoji.get_emoji_regexp()
         list_emoji_icon_re = re.compile(u"^" + emoji_re.pattern)
