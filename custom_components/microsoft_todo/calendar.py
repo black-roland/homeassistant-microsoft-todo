@@ -123,8 +123,8 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         )
     )
 
-    todo_list_names = [todo_list["name"] for todo_list in tasks_api.get_lists()["value"]]
-    calendar_devices = [MSToDoListDevice(tasks_api, name) for name in todo_list_names]
+    todo_lists = tasks_api.get_lists()["value"]
+    calendar_devices = [MSToDoListDevice(tasks_api, todo_list['id'], todo_list['name']) for todo_list in todo_lists]
     add_entities(calendar_devices)
 
     def handle_new_task(call):
@@ -184,8 +184,9 @@ class MSToDoAuthCallbackView(HomeAssistantView):
 
 class MSToDoListDevice(CalendarEventDevice):
 
-    def __init__(self, tasks_api, list_name):
+    def __init__(self, tasks_api, list_id, list_name):
         self._tasks_api = tasks_api
+        self._list_id = list_id
         self._list_name = list_name
         self._tasks = []
 
@@ -214,5 +215,5 @@ class MSToDoListDevice(CalendarEventDevice):
 
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     def update(self):
-        tasks_res = self._tasks_api.get_uncompleted_tasks(self._list_name)
+        tasks_res = self._tasks_api.get_uncompleted_tasks(self._list_id)
         self._tasks = tasks_res["value"]
