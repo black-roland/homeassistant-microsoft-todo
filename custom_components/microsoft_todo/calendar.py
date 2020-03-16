@@ -2,6 +2,7 @@ import os
 import logging
 
 import voluptuous as vol
+from datetime import timedelta
 from requests_oauthlib import OAuth2Session
 from aiohttp.web import Response
 from requests.adapters import HTTPAdapter
@@ -15,7 +16,7 @@ from homeassistant.components.calendar import (
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.http import HomeAssistantView
 from homeassistant.util.json import load_json, save_json
-from homeassistant.util import dt
+from homeassistant.util import dt, Throttle
 
 from .outlook_tasks_api import OutlookTasksApi
 from .const import (
@@ -58,6 +59,8 @@ NEW_TASK_SERVICE_SCHEMA = vol.Schema(
         vol.Optional(REMINDER_DATE_TIME): cv.datetime,
     }
 )
+
+MIN_TIME_BETWEEN_UPDATES = timedelta(minutes=15)
 
 
 def request_configuration(hass, config, add_entities, authorization_url):
@@ -139,7 +142,6 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
 
 class MSToDoAuthCallbackView(HomeAssistantView):
-
     url = AUTH_CALLBACK_PATH
     name = "auth:ms_todo:callback"
     requires_auth = False
@@ -179,6 +181,7 @@ class MSToDoAuthCallbackView(HomeAssistantView):
             text=html_response.format(response_message), content_type="text/html"
         )
 
+
 class MSToDoListDevice(CalendarEventDevice):
 
     def __init__(self, tasks_api, list_name):
@@ -188,6 +191,7 @@ class MSToDoListDevice(CalendarEventDevice):
 
     @property
     def event(self):
+        # TODO: implement this
         return None
 
     @property
@@ -205,8 +209,10 @@ class MSToDoListDevice(CalendarEventDevice):
         return attributes
 
     async def async_get_events(self, hass, start_date, end_date):
+        # TODO: implement this
         return []
 
+    @Throttle(MIN_TIME_BETWEEN_UPDATES)
     def update(self):
         tasks_res = self._tasks_api.get_uncompleted_tasks(self._list_name)
         self._tasks = tasks_res["value"]
