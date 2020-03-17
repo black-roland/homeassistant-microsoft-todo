@@ -52,6 +52,24 @@ class OutlookTasksApi:
 
         return res
 
+    def get_uncompleted_tasks(self, list_id):
+        uri = self.api_endpoint + "/beta/me/outlook/taskFolders/{}/tasks".format(list_id)
+        query_params = {
+            "$filter": "status ne 'completed'",
+            "$top": 100
+        }
+
+        try:
+            self.logger.debug("Fetching To Do lists info")
+            res = self.client.get(uri, params=query_params)
+            res.raise_for_status()
+            self.logger.debug("To Do tasks response: %s", res.json())
+        except HTTPError as ex:
+            self.logger.error("Unable to get tasks: %s. Response: %s", ex, res.json())
+            raise
+
+        return res.json()
+
     def get_list_id_by_name(self, list_name):
         lists = self.get_lists()
 
@@ -61,7 +79,7 @@ class OutlookTasksApi:
                 if l["name"] == list_name
                 # To Do allows to set an icon (emoji) for a list and this emoji
                 # is prepended to the list name so it needs to be stripped.
-                or self._strip_emoji_icon(l["name"]) == list_name
+                or OutlookTasksApi.strip_emoji_icon(l["name"]) == list_name
             )
         except StopIteration as ex:
             self.logger.error("No list with the name %s. %s", list_name, ex)
@@ -83,7 +101,8 @@ class OutlookTasksApi:
 
         return res.json()
 
-    def _strip_emoji_icon(self, list_name):
+    @staticmethod
+    def strip_emoji_icon(list_name):
         emoji_re = emoji.get_emoji_regexp()
         list_emoji_icon_re = re.compile(u"^" + emoji_re.pattern)
         return list_emoji_icon_re.sub(r"", list_name)

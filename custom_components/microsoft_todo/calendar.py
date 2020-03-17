@@ -2,6 +2,7 @@ import os
 import logging
 
 import voluptuous as vol
+from datetime import timedelta
 from requests_oauthlib import OAuth2Session
 from aiohttp.web import Response
 from requests.adapters import HTTPAdapter
@@ -10,11 +11,12 @@ from urllib3.util import Retry
 from homeassistant.core import callback
 from homeassistant.components.calendar import (
     PLATFORM_SCHEMA,
+    CalendarEventDevice,
 )
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.http import HomeAssistantView
 from homeassistant.util.json import load_json, save_json
-from homeassistant.util import dt
+from homeassistant.util import dt, Throttle
 
 from .outlook_tasks_api import OutlookTasksApi
 from .const import (
@@ -35,6 +37,7 @@ from .const import (
     NOTE,
     DUE_DATE,
     REMINDER_DATE_TIME,
+    ALL_TASKS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -56,6 +59,8 @@ NEW_TASK_SERVICE_SCHEMA = vol.Schema(
         vol.Optional(REMINDER_DATE_TIME): cv.datetime,
     }
 )
+
+MIN_TIME_BETWEEN_UPDATES = timedelta(minutes=15)
 
 
 def request_configuration(hass, config, add_entities, authorization_url):
@@ -118,6 +123,11 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         )
     )
 
+    if config_file:
+        todo_lists = tasks_api.get_lists()["value"]
+        calendar_devices = [MSToDoListDevice(tasks_api, todo_list['id'], OutlookTasksApi.strip_emoji_icon(todo_list['name'])) for todo_list in todo_lists]
+        add_entities(calendar_devices)
+
     def handle_new_task(call):
         subject = call.data.get(SUBJECT)
         list_name = call.data.get(LIST_NAME)
@@ -133,7 +143,6 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
 
 class MSToDoAuthCallbackView(HomeAssistantView):
-
     url = AUTH_CALLBACK_PATH
     name = "auth:ms_todo:callback"
     requires_auth = False
@@ -172,3 +181,40 @@ class MSToDoAuthCallbackView(HomeAssistantView):
         return Response(
             text=html_response.format(response_message), content_type="text/html"
         )
+
+
+class MSToDoListDevice(CalendarEventDevice):
+
+    def __init__(self, tasks_api, list_id, list_name):
+        self._tasks_api = tasks_api
+        self._list_id = list_id
+        self._list_name = list_name
+        self._tasks = []
+
+    @property
+    def event(self):
+        # TODO: implement this
+        return None
+
+    @property
+    def name(self):
+        return self._list_name
+
+    @property
+    def device_state_attributes(self):
+        if len(self._tasks) == 0:
+            return None
+
+        attributes = {}
+        attributes[ALL_TASKS] = [t["subject"] for t in self._tasks]
+
+        return attributes
+
+    async def async_get_events(self, hass, start_date, end_date):
+        # TODO: implement this
+        return []
+
+    @Throttle(MIN_TIME_BETWEEN_UPDATES)
+    def update(self):
+        tasks_res = self._tasks_api.get_uncompleted_tasks(self._list_id)
+        self._tasks = tasks_res["value"]

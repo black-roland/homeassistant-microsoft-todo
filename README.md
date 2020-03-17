@@ -1,6 +1,6 @@
 # Microsoft To Do integration for Home Assistant
 
-The integration allows you to create tasks in Microsoft To Do from Home Assistant.
+The integration brings your Microsoft To Do tasks into Home Assistant and also allows to create new tasks.
 
 ## Work in progress
 
@@ -51,8 +51,6 @@ Simple example:
     list_name: "Home Assistant"
 ```
 
-*TODO*: Use the list name instead of ID [#4](https://github.com/black-roland/homeassistant-microsoft-todo/issues/4).
-
 Automation example:
 
 ```yaml
@@ -75,3 +73,27 @@ automation:
 ```
 
 *NOTE*: Service name might be changed in future [#5](https://github.com/black-roland/homeassistant-microsoft-todo/issues/5).
+
+## Calendar sensors
+
+The integration creates a binary sensor for each to-do list with the tasks exposed as `all_tasks` attribute.
+
+Currently only `all_tasks` functionality is supported.
+
+```yaml
+automation:
+  - alias: "Remind to buy groceries after work"
+    trigger:
+      platform: state
+      entity_id: person.bob
+      from: "office"
+      to: "away"
+    condition:
+      condition: template
+      value_template: "{{ state_attr('calendar.shopping_list', 'all_tasks') | length > 0 }}"
+    action:
+      - service: notify.email_bob
+        data:
+          title: "Shopping list"
+          message: "Don't forget to check your shopping list before going home"
+```
