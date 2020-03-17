@@ -125,7 +125,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
     if config_file:
         todo_lists = tasks_api.get_lists()["value"]
-        calendar_devices = [MSToDoListDevice(tasks_api, todo_list['id'], todo_list['name']) for todo_list in todo_lists]
+        calendar_devices = [MSToDoListDevice(tasks_api, todo_list['id'], OutlookTasksApi.strip_emoji_icon(todo_list['name'])) for todo_list in todo_lists]
         add_entities(calendar_devices)
 
     def handle_new_task(call):

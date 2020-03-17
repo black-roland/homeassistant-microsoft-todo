@@ -79,7 +79,7 @@ class OutlookTasksApi:
                 if l["name"] == list_name
                 # To Do allows to set an icon (emoji) for a list and this emoji
                 # is prepended to the list name so it needs to be stripped.
-                or OutlookTasksApi._strip_emoji_icon(l["name"]) == list_name
+                or OutlookTasksApi.strip_emoji_icon(l["name"]) == list_name
             )
         except StopIteration as ex:
             self.logger.error("No list with the name %s. %s", list_name, ex)
@@ -102,7 +102,7 @@ class OutlookTasksApi:
         return res.json()
 
     @staticmethod
-    def _strip_emoji_icon(list_name):
+    def strip_emoji_icon(list_name):
         emoji_re = emoji.get_emoji_regexp()
         list_emoji_icon_re = re.compile(u"^" + emoji_re.pattern)
         return list_emoji_icon_re.sub(r"", list_name)
