@@ -12,7 +12,7 @@ MS_TODO_AUTH_FILE = ".ms_todo_auth.json"
 ATTR_ACCESS_TOKEN = "access_token"
 ATTR_REFRESH_TOKEN = "refresh_token"
 
-SERVICE_NEW_TASK = "ms_todo_new_task"
+SERVICE_NEW_TASK = "new_task"
 
 SUBJECT = "subject"
 LIST_CONF = "list_conf"
