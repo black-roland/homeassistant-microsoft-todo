@@ -1,11 +1,17 @@
-# microsoft_todo.ms_todo_new_task
+# Microsoft To Do integration
 
-Example:
+The integration brings your Microsoft To Do tasks into Home Assistant and allows creating new tasks.
 
-```yaml
-- service: microsoft_todo.ms_todo_new_task
-  data:
-    subject: "Test task"
-```
+{% if installed %}
+## Breaking changes
 
-See README for details.
+Service name changed to `microsoft_todo.new_task`. Please update your automations.
+{% endif %}
+
+## Features
+
+- Ability to create new tasks in Microsoft To Do;
+- Custom due date, reminder date, and note;
+- Allows to expose your to-do lists as sensors and use in automations. 
+
+Please check [the repository](https://github.com/black-roland/homeassistant-microsoft-todo#readme) for configuration and usage instructions.

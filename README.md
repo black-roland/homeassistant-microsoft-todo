@@ -1,6 +1,6 @@
 # Microsoft To Do integration for Home Assistant
 
-The integration brings your Microsoft To Do tasks into Home Assistant and also allows to create new tasks.
+The integration brings your Microsoft To Do tasks into Home Assistant and allows creating new tasks.
 
 ## Work in progress
 
@@ -38,14 +38,16 @@ calendar:
 
 Restart Home Assistant and finalize authorization through UI. There should be a new configuration request in notifications.
 
+*NOTE*: After successful auth please restart your Home Assistant again (it's known issue #10). 
+
 ## Services
 
-To create a task in Microsoft To Do you can call `microsoft_todo.ms_todo_new_task` service.
+To create a task in Microsoft To Do you can call `microsoft_todo.new_task` service.
 
 Simple example:
 
 ```yaml
-- service: microsoft_todo.ms_todo_new_task
+- service: microsoft_todo.new_task
   data:
     subject: "Test task"
     list_name: "Home Assistant"
@@ -63,7 +65,7 @@ automation:
       condition: template
       value_template: "{{ now().day == 1 }}"
     action:
-      - service: microsoft_todo.ms_todo_new_task
+      - service: microsoft_todo.new_task
         data_template:
           subject: "Pay utility bill for {{ now().replace(month=now().month - 1).strftime('%B') }}" # previous month name
           list_name: "Home Assistant"
@@ -72,13 +74,11 @@ automation:
           reminder_date_time: "{{ now().strftime('%Y-%m-%dT17:00:00') }}" # at 17:00 today
 ```
 
-*NOTE*: Service name might be changed in future [#5](https://github.com/black-roland/homeassistant-microsoft-todo/issues/5).
-
 ## Calendar sensors
 
 The integration creates a binary sensor for each to-do list with the tasks exposed as `all_tasks` attribute.
 
-Currently only `all_tasks` functionality is supported.
+Currently, only `all_tasks` functionality is supported.
 
 ```yaml
 automation:
