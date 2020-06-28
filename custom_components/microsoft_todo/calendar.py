@@ -1,24 +1,23 @@
-import os
 import logging
-
-import voluptuous as vol
+import os
 from datetime import timedelta
-from requests_oauthlib import OAuth2Session
-from aiohttp.web import Response
-from requests.adapters import HTTPAdapter
-from urllib3.util import Retry
 
-from homeassistant.core import callback
+import homeassistant.helpers.config_validation as cv
+import voluptuous as vol
+from aiohttp.web import Response
 from homeassistant.components.calendar import (
     PLATFORM_SCHEMA,
     CalendarEventDevice,
 )
-import homeassistant.helpers.config_validation as cv
 from homeassistant.components.http import HomeAssistantView
-from homeassistant.util.json import load_json, save_json
+from homeassistant.core import callback
+from homeassistant.helpers.network import get_url
 from homeassistant.util import dt, Throttle
+from homeassistant.util.json import load_json, save_json
+from requests.adapters import HTTPAdapter
+from requests_oauthlib import OAuth2Session
+from urllib3.util import Retry
 
-from .outlook_tasks_api import OutlookTasksApi
 from .const import (
     DOMAIN,
     CONF_CLIENT_ID,
@@ -39,6 +38,7 @@ from .const import (
     REMINDER_DATE_TIME,
     ALL_TASKS,
 )
+from .outlook_tasks_api import OutlookTasksApi
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -86,7 +86,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         save_json(hass.config.path(MS_TODO_AUTH_FILE), token)
 
     # TODO: create a separate HTTP client class
-    callback_url = f"{hass.config.api.base_url}{AUTH_CALLBACK_PATH}"
+    callback_url = f"{get_url(hass)}{AUTH_CALLBACK_PATH}"
     oauth = OAuth2Session(
         config.get(CONF_CLIENT_ID),
         scope=SCOPE,
@@ -125,7 +125,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
     if config_file:
         todo_lists = tasks_api.get_lists()["value"]
-        calendar_devices = [MSToDoListDevice(tasks_api, todo_list['id'], OutlookTasksApi.strip_emoji_icon(todo_list['name'])) for todo_list in todo_lists]
+        calendar_devices = [
+            MSToDoListDevice(tasks_api, todo_list['id'], OutlookTasksApi.strip_emoji_icon(todo_list['name'])) for
+            todo_list in todo_lists]
         add_entities(calendar_devices)
 
     def handle_new_task(call):
