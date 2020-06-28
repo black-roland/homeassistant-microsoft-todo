@@ -17,6 +17,7 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.components.http import HomeAssistantView
 from homeassistant.util.json import load_json, save_json
 from homeassistant.util import dt, Throttle
+from homeassistant.helpers.network import get_url
 
 from .outlook_tasks_api import OutlookTasksApi
 from .const import (
@@ -86,7 +87,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         save_json(hass.config.path(MS_TODO_AUTH_FILE), token)
 
     # TODO: create a separate HTTP client class
-    callback_url = f"{hass.config.api.base_url}{AUTH_CALLBACK_PATH}"
+    callback_url = f"{get_url(hass)}{AUTH_CALLBACK_PATH}"
     oauth = OAuth2Session(
         config.get(CONF_CLIENT_ID),
         scope=SCOPE,
