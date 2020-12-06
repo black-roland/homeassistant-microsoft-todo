@@ -86,7 +86,7 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         save_json(hass.config.path(MS_TODO_AUTH_FILE), token)
 
     # TODO: create a separate HTTP client class
-    callback_url = f"{get_url(hass)}{AUTH_CALLBACK_PATH}"
+    callback_url = f"{get_url(hass, prefer_external=True)}{AUTH_CALLBACK_PATH}"
     oauth = OAuth2Session(
         config.get(CONF_CLIENT_ID),
         scope=SCOPE,
