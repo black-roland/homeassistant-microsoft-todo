@@ -154,8 +154,15 @@ class MSToDoAuthCallbackView(HomeAssistantView):
         self.client_secret = client_secret
         self.setup_args = setup_args
 
+    def get_token(self, code):
+        return self.oauth.fetch_token(
+            TOKEN_URL,
+            client_secret=self.client_secret,
+            code=code
+        )
+
     @callback
-    def get(self, request):
+    async def get(self, request):
         hass = request.app["hass"]
         data = request.query
 
@@ -167,11 +174,7 @@ class MSToDoAuthCallbackView(HomeAssistantView):
             _LOGGER.error(error_msg)
             return Response(text=html_response.format(error_msg), content_type="text/html")
 
-        token = self.oauth.fetch_token(
-            TOKEN_URL,
-            client_secret=self.client_secret,
-            code=data.get("code")
-        )
+        token = await hass.async_add_executor_job(self.get_token, data.get("code"))
 
         save_json(hass.config.path(MS_TODO_AUTH_FILE), token)
 
