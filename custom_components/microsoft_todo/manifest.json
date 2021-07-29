@@ -1,6 +1,7 @@
 {
   "domain": "microsoft_todo",
   "name": "Microsoft To Do",
+  "version": "1.0.3",
   "documentation": "https://github.com/black-roland/homeassistant-microsoft-todo",
   "dependencies": [],
   "codeowners": ["@black-roland"],
