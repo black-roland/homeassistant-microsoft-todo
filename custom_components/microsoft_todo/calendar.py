@@ -16,6 +16,7 @@ from homeassistant.util import dt, Throttle
 from homeassistant.util.json import load_json, save_json
 from requests.adapters import HTTPAdapter
 from requests_oauthlib import OAuth2Session
+from oauthlib.oauth2.rfc6749.errors import InvalidGrantError
 from urllib3.util import Retry
 
 from .const import (
@@ -124,11 +125,18 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
     )
 
     if config_file:
-        todo_lists = tasks_api.get_lists()["value"]
-        calendar_devices = [
-            MSToDoListDevice(tasks_api, todo_list['id'], OutlookTasksApi.strip_emoji_icon(todo_list['name'])) for
-            todo_list in todo_lists]
-        add_entities(calendar_devices)
+        try:
+            todo_lists = tasks_api.get_lists()["value"]
+            calendar_devices = [
+                MSToDoListDevice(tasks_api, todo_list['id'], OutlookTasksApi.strip_emoji_icon(todo_list['name'])) for
+                todo_list in todo_lists]
+            add_entities(calendar_devices)
+        except InvalidGrantError as ex:
+            _LOGGER.warn(f"InvalidGrantError - Triggering reconfiguration")
+            oauth.scope = AUTH_REQUEST_SCOPE
+            authorization_url, _state = oauth.authorization_url(AUTHORIZATION_BASE_URL)
+            oauth.scope = SCOPE
+            request_configuration(hass, config, add_entities, authorization_url)
 
     def handle_new_task(call):
         subject = call.data.get(SUBJECT)
