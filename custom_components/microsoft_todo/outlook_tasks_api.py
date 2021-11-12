@@ -31,13 +31,13 @@ class OutlookTasksApi:
         if due_date:
             task_req["dueDateTime"] = {
                 "dateTime": due_date.isoformat(),
-                "timeZone": self.timezone.zone
+                "timeZone": str(self.timezone)
             }
 
         if reminder_date_time:
             task_req["reminderDateTime"] = {
                 "dateTime": reminder_date_time.isoformat(),
-                "timeZone": self.timezone.zone
+                "timeZone": str(self.timezone)
             }
             task_req["isReminderOn"] = True
 
