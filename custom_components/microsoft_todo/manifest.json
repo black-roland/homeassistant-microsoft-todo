@@ -1,12 +1,12 @@
 {
   "domain": "microsoft_todo",
   "name": "Microsoft To Do",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "documentation": "https://github.com/black-roland/homeassistant-microsoft-todo",
   "dependencies": [],
   "codeowners": ["@black-roland"],
   "requirements": [
     "requests_oauthlib==1.3.0",
-    "emoji==0.6.0"
+    "emoji==0.6.1"
   ]
 }
