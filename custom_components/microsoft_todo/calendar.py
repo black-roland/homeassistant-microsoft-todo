@@ -214,7 +214,7 @@ class MSToDoListDevice(CalendarEventDevice):
         return self._list_name
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         _LOGGER.debug("Total Tasks: %i", len(self._tasks))
         if len(self._tasks) == 0:
             return None
@@ -223,7 +223,7 @@ class MSToDoListDevice(CalendarEventDevice):
         try:
             attributes[ALL_TASKS] = [t["subject"] for t in self._tasks]
             _LOGGER.debug("ALL_TASKS count: %i", len(attributes[ALL_TASKS]))
-            
+
             __overdue = lambda x: x["dueDateTime"] != None and datetime.strptime(x["dueDateTime"]["dateTime"].split("T")[0], '%Y-%m-%d') < datetime.now()
             attributes["overdue_tasks"] = [t["subject"] for t in filter(__overdue,self._tasks)]
             _LOGGER.debug("overdue_tasks count: %i", len(attributes["overdue_tasks"]))
