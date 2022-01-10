@@ -76,9 +76,9 @@ automation:
 
 ## Calendar sensors
 
-The integration creates a binary sensor for each to-do list with the tasks exposed as `all_tasks` attribute.
+The integration creates sensors for each to-do list with tasks exposed as `all_tasks` attribute. You can find sensors on the Developer Tools page prefixed with `calendar.`.
 
-Currently, only `all_tasks` functionality is supported.
+Sensors can be used in automations:
 
 ```yaml
 automation:
@@ -97,3 +97,16 @@ automation:
           title: "Shopping list"
           message: "Don't forget to check your shopping list before going home"
 ```
+
+Or sensors can be used in Lovelace. There are multiple ways to show your tasks: by simply using ssmorris/lovelace-attribute-list-view card or by adding a custom markdown card with Jinja template:
+
+```yaml
+type: markdown
+content: |-
+  {% for task in state_attr('calendar.PUT_YOUR_LIST_NAME_HERE', 'all_tasks') -%}
+  - {{ task }}
+  {% endfor %}
+title: To Do
+```
+
+![Markdown card](https://user-images.githubusercontent.com/1756198/106674478-5a6cb080-65c4-11eb-9306-e363ff399f28.png)
