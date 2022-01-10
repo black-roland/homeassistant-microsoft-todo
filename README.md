@@ -98,7 +98,7 @@ automation:
           message: "Don't forget to check your shopping list before going home"
 ```
 
-Or sensors can be used in Lovelace. There are multiple ways to show your tasks: by simply using ssmorris/lovelace-attribute-list-view card or by adding a custom markdown card with Jinja template:
+Or sensors can be used in Lovelace. There are multiple ways to show your tasks: by simply using [ssmorris/lovelace-attribute-list-view](https://github.com/ssmorris/lovelace-attribute-list-view) card or by adding a custom markdown card with Jinja template:
 
 ```yaml
 type: markdown
