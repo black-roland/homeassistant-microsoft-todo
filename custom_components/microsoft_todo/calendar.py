@@ -7,7 +7,7 @@ import voluptuous as vol
 from aiohttp.web import Response
 from homeassistant.components.calendar import (
     PLATFORM_SCHEMA,
-    CalendarEventDevice,
+    CalendarEntity,
 )
 from homeassistant.components.http import HomeAssistantView
 from homeassistant.core import callback
@@ -196,7 +196,7 @@ class MSToDoAuthCallbackView(HomeAssistantView):
         )
 
 
-class MSToDoListDevice(CalendarEventDevice):
+class MSToDoListDevice(CalendarEntity):
 
     def __init__(self, tasks_api, list_id, list_name):
         self._tasks_api = tasks_api
