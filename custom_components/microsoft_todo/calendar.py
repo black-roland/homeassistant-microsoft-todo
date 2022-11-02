@@ -224,7 +224,7 @@ class MSToDoListDevice(CalendarEntity):
             # all tasks
             attributes[ALL_TASKS] = [t["subject"] for t in self._tasks]
             _LOGGER.debug("ALL_TASKS count: %i", len(attributes[ALL_TASKS]))
-            
+
             # due today
             __today = (
                 lambda x: x["dueDateTime"] != None
@@ -243,8 +243,8 @@ class MSToDoListDevice(CalendarEntity):
                 lambda x: x["dueDateTime"] != None
                 and datetime.strptime(
                     x["dueDateTime"]["dateTime"].split("T")[0], "%Y-%m-%d"
-                )
-                < datetime.now()
+                ).date()
+                < datetime.now().date()
             )
             attributes["overdue_tasks"] = [
                 t["subject"] for t in filter(__overdue, self._tasks)
