@@ -10,7 +10,7 @@ Work is still in progress and there might be breaking changes. Tasks for the 1st
 
 This component can be installed using [HACS](https://github.com/hacs/integration). Simply add a custom repository `black-roland/homeassistant-microsoft-todo` and install the integration.
 
-Alternatively, that's possible to copy the content of the `custom_components` to [the config directory](https://developers.home-assistant.io/docs/en/creating_component_loading.html).
+Alternatively, that's possible to copy the content of the `custom_components` to [the config directory](https://developers.home-assistant.io/docs/creating_integration_file_structure#where-home-assistant-looks-for-integrations).
 
 ## Setup
 
@@ -18,12 +18,12 @@ To get access to Microsoft To Do API you need to register an application in Azur
 
 1. Open [Azure portal](https://portal.azure.com/#home);
 1. Go to app registrations:<br />
-   ![App registrations](https://share.roland.black/file/black-roland-share/96db74de-fb21-11e9-a480-f81654971495/app-registrations.gif)
+   ![App registrations](https://user-images.githubusercontent.com/1756198/202914602-9dc29c3d-971b-4676-961c-34de793bbf02.gif)
 1. Register a new personal app and obtain client ID and secret:<br />
-   ![App registration and credentials](https://share.roland.black/file/black-roland-share/515dfc34-9bbb-11ea-81d7-50eb7157640d/register-app-obtain-creds.gif)
+   ![App registration and credentials](https://user-images.githubusercontent.com/1756198/202914734-b5facf00-259d-4934-bef2-dfa104abdefc.gif)
 1. Add a redirect URI: `https://[YOUR HOME ASSISTANT URL:PORT]/api/microsoft-todo`, replace `[YOUR HOME ASSISTANT URL:PORT]` with the domain name and port of our Home Assistant instance:<br />
-   ![Redirect URI](https://share.roland.black/file/black-roland-share/d9a41612-fb22-11e9-8f90-f81654971495/redirect-uri.gif)<br />
-   To be able to authenticate please make sure that [`base_url` option](https://www.home-assistant.io/integrations/http/#base_url) is configured properly and your browser can access the redirect URI (it doesn’t have to be accessible from the Internet, it can be even `localhost`).
+   ![Redirect URI](https://user-images.githubusercontent.com/1756198/202914751-796038c5-78f0-48ff-a0ca-fa0401a79d23.gif)<br />
+   To be able to authenticate please make sure that [Home Assistant URL](https://www.home-assistant.io/docs/configuration/basic/#external_url) is configured properly and your browser can access the redirect URL (it doesn’t have to be accessible from the Internet, it can be even `localhost`).
 
 ## Configuration
 
