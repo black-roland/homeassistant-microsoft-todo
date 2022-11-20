@@ -221,11 +221,34 @@ class MSToDoListDevice(CalendarEntity):
 
         attributes = {}
         try:
+            # all tasks
             attributes[ALL_TASKS] = [t["subject"] for t in self._tasks]
             _LOGGER.debug("ALL_TASKS count: %i", len(attributes[ALL_TASKS]))
 
-            __overdue = lambda x: x["dueDateTime"] != None and datetime.strptime(x["dueDateTime"]["dateTime"].split("T")[0], '%Y-%m-%d') < datetime.now()
-            attributes["overdue_tasks"] = [t["subject"] for t in filter(__overdue,self._tasks)]
+            # due today
+            __today = (
+                lambda x: x["dueDateTime"] != None
+                and datetime.strptime(
+                    x["dueDateTime"]["dateTime"].split("T")[0], "%Y-%m-%d"
+                ).date()
+                == datetime.now().date()
+            )
+            attributes["duetoday_tasks"] = [
+                t["subject"] for t in filter(__today, self._tasks)
+            ]
+            _LOGGER.debug("duetoday_tasks count: %i", len(attributes["duetoday_tasks"]))
+
+            # overdue
+            __overdue = (
+                lambda x: x["dueDateTime"] != None
+                and datetime.strptime(
+                    x["dueDateTime"]["dateTime"].split("T")[0], "%Y-%m-%d"
+                ).date()
+                < datetime.now().date()
+            )
+            attributes["overdue_tasks"] = [
+                t["subject"] for t in filter(__overdue, self._tasks)
+            ]
             _LOGGER.debug("overdue_tasks count: %i", len(attributes["overdue_tasks"]))
         except Exception as ex:
             _LOGGER.error("Unable to set attributes: %s", ex)
