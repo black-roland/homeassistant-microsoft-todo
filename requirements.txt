@@ -8,7 +8,7 @@ attrs==19.3.0
 bcrypt==3.1.7
 boto3==1.14.12
 botocore==1.17.12
-certifi==2020.12.5
+certifi==2022.12.7
 cffi==1.14.0
 chardet==3.0.4
 ciso8601==2.1.3
