@@ -1,3 +1,9 @@
+# DEPRECATED
+
+Please use [O365-HomeAssistant](https://github.com/RogerSelwyn/O365-HomeAssistant) instead. For the migration guide take a look at [#98](https://github.com/black-roland/homeassistant-microsoft-todo/issues/98#issuecomment-1805910455).
+
+---
+
 # Microsoft To Do integration for Home Assistant
 
 The integration brings your Microsoft To Do tasks into Home Assistant and allows creating new tasks.
